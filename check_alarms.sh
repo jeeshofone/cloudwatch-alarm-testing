@@ -14,27 +14,20 @@ then
   read lambda_function_name
 fi
 
-
 start_time=$(date +%s)
 
 while true
 do
-  for i in {1..6}
-  do
-    if [ $i -eq 1 ]; then
-      aws lambda invoke --function-name $lambda_function_name outputfile.txt
-    fi
+  aws lambda invoke --function-name $lambda_function_name outputfile.txt
 
-    current_time=$(date +%s)
-    elapsed_time=$(expr $current_time - $start_time)
-    elapsed_minutes=$(expr $elapsed_time / 60)
+  current_time=$(date +%s)
+  elapsed_time=$(expr $current_time - $start_time)
+  elapsed_minutes=$(expr $elapsed_time / 60)
 
-    echo "Elapsed time: $elapsed_minutes minutes"
+  echo "Elapsed time: $elapsed_minutes minutes"
 
-    echo "Checking alarm states..."
-    aws cloudwatch describe-alarms --alarm-name-prefix "alarmtest" --query 'MetricAlarms[*].[AlarmName,AlarmDescription,StateValue,StateUpdatedTimestamp]' --output table
+  echo "Checking alarm states..."
+  aws cloudwatch describe-alarms --alarm-name-prefix "alarmtest" --query 'MetricAlarms[*].[AlarmName,AlarmDescription,StateValue,StateUpdatedTimestamp]' --output table
 
-    sleep 10
-  done
+  sleep 10
 done
-
